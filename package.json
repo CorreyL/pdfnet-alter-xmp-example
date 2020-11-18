@@ -1,0 +1,19 @@
+{
+  "name": "pdfnet-xmp-example",
+  "version": "1.0.0",
+  "description": "An example of how to use PDFNet to edit the XMP of a PDF",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "pdfnet",
+    "pdf"
+  ],
+  "author": "CorreyL",
+  "license": "ISC",
+  "dependencies": {
+    "@pdftron/pdfnet-node": "^8.0.1"
+  }
+}
