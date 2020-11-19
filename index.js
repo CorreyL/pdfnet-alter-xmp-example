@@ -3,6 +3,7 @@ const { promises: fs } = require('fs');
 const { exit } = require('process');
 const xmlToJson = require('fast-xml-parser');
 const JsonToXmlParser = require('fast-xml-parser').j2xParser;
+const assert = require('assert');
 
 (async () => {
   try {
@@ -71,6 +72,24 @@ const JsonToXmlParser = require('fast-xml-parser').j2xParser;
       newFilterReader
     );
     await (await pdfdoc.getRoot()).put("Metadata", newXmpStream);
+    // Set the new title and subject of the document
+    const pdfDocInfo = await pdfdoc.getDocInfo();
+    pdfDocInfo.setTitle(newTitle);
+    pdfDocInfo.setSubject(newSubject);
+    // Save the document to memory, and convert to PDF/A
+    let uint8Array = await pdfdoc.saveMemoryBuffer(PDFNet.SDFDoc.SaveOptions.e_linearized);
+    const pdfaCompliance = await PDFNet.PDFACompliance.createFromBuffer(
+      true,
+      uint8Array,
+      '',
+      PDFNet.PDFACompliance.Conformance.e_Level1B,
+    );
+    uint8Array = await pdfaCompliance.saveAsFromBuffer(true);
+    const pdfa = await PDFNet.PDFDoc.createFromBuffer(uint8Array);
+    // Assert that the XMP replacement changes the PDF/A title and subject
+    assert.deepStrictEqual((await (await pdfa.getDocInfo()).getTitle()), newTitle);
+    assert.deepStrictEqual((await (await pdfa.getDocInfo()).getSubject()), newSubject);
+    await pdfaCompliance.saveAsFromFileName('modified-pdfa.pdf', true);
   } catch (e) {
     console.error(`Error: ${e}`);
   } finally {
