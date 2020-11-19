@@ -18,6 +18,3 @@ cd pdfnet-alter-xmp-example
 npm install
 npm start
 ```
-
-Note that this repository assumes you have a PDF with XMP metadata in the
-working directory, with the file name `PDF_with_title_and_subject.pdf`
