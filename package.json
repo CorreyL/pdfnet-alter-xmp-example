@@ -1,5 +1,5 @@
 {
-  "name": "pdfnet-xmp-example",
+  "name": "pdfnet-alter-xmp-example",
   "version": "1.0.0",
   "description": "An example of how to use PDFNet to edit the XMP of a PDF",
   "main": "index.js",
