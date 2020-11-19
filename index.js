@@ -24,6 +24,19 @@ const JsonToXmlParser = require('fast-xml-parser').j2xParser;
       total += String.fromCharCode(char);
       char = await filterReader.get();
     }
+    /**
+     * The outermost xpacket elements are not being converted to the JSON format
+     * hence they need to be manually extract via Regular Expressions
+     */
+    const re = /<\?xpacket .*\?>/gm;
+    const matches = [];
+    let match = re.exec(total);
+    while (match != null) {
+        matches.push(match[0]);
+        match = re.exec(total);
+    }
+    const openingXPacket = matches[0];
+    const closingXPacket = matches[1];
     const jsonObj = xmlToJson.parse(
       total,
       {
@@ -41,7 +54,8 @@ const JsonToXmlParser = require('fast-xml-parser').j2xParser;
       ignoreAttributes: false,
     });
     const xmlFromJson = jsonToXmlParser.parse(jsonObj);
-    await fs.writeFile('changedXmp.xml', xmlFromJson);
+    const newXmp = `${openingXPacket}${xmlFromJson}${closingXPacket}`;
+    await fs.writeFile('changedXmp.xml', newXmp);
   } catch (e) {
     console.error(`Error: ${e}`);
   } finally {
