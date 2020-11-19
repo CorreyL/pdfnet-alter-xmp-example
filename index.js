@@ -86,8 +86,9 @@ const assert = require('assert');
     uint8Array = await pdfaCompliance.saveAsFromBuffer(true);
     const pdfa = await PDFNet.PDFDoc.createFromBuffer(uint8Array);
     // Assert that the XMP replacement changes the PDF/A title and subject
-    assert.deepStrictEqual((await (await pdfa.getDocInfo()).getTitle()), newTitle);
-    assert.deepStrictEqual((await (await pdfa.getDocInfo()).getSubject()), newSubject);
+    const pdfaDocInfo = await pdfa.getDocInfo();
+    assert.deepStrictEqual((await pdfaDocInfo.getTitle()), newTitle);
+    assert.deepStrictEqual((await pdfaDocInfo.getSubject()), newSubject);
     await pdfaCompliance.saveAsFromFileName('modified-pdfa.pdf', true);
   } catch (e) {
     console.error(`Error: ${e}`);
