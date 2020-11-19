@@ -14,6 +14,7 @@
   "author": "CorreyL",
   "license": "ISC",
   "dependencies": {
-    "@pdftron/pdfnet-node": "^8.0.1"
+    "@pdftron/pdfnet-node": "^8.0.1",
+    "fast-xml-parser": "^3.17.4"
   }
 }
