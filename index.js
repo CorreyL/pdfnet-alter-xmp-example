@@ -1,5 +1,4 @@
 const { PDFNet } = require('@pdftron/pdfnet-node');
-const { promises: fs } = require('fs');
 const { exit } = require('process');
 const xmlToJson = require('fast-xml-parser');
 const JsonToXmlParser = require('fast-xml-parser').j2xParser;
