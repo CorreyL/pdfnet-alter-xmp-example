@@ -13,6 +13,14 @@ const { exit } = require('process');
       console.warn('No XMP stream detected in the PDF, exitting.');
       exit(0);
     }
+    const stream = await xmpStream.getDecodedStream();
+    const filterReader = await PDFNet.FilterReader.create(stream);
+    let char = await filterReader.get();
+    let total = '';
+    while (char > 0) {
+      total += String.fromCharCode(char);
+      char = await filterReader.get();
+    }
   } catch (e) {
     console.error(`Error: ${e}`);
   } finally {
