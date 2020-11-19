@@ -55,7 +55,22 @@ const JsonToXmlParser = require('fast-xml-parser').j2xParser;
     });
     const xmlFromJson = jsonToXmlParser.parse(jsonObj);
     const newXmp = `${openingXPacket}${xmlFromJson}${closingXPacket}`;
-    await fs.writeFile('changedXmp.xml', newXmp);
+    /**
+     * Prepare the appropriate Filter objects to write the new XMP back into the
+     * document
+     */
+    const filter = await PDFNet.Filter.createFromMemory(
+      Buffer.from(
+        newXmp,
+        // latin1 encoding is used to ensure special characters are not mangled
+        'latin1',
+      ),
+    );
+    const newFilterReader = await PDFNet.FilterReader.create(filter);
+    const newXmpStream = await pdfdoc.createIndirectStreamFromFilter(
+      newFilterReader
+    );
+    await (await pdfdoc.getRoot()).put("Metadata", newXmpStream);
   } catch (e) {
     console.error(`Error: ${e}`);
   } finally {
